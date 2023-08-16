@@ -5,116 +5,96 @@
 </head>
 <section class="section dashboard">
     <div class="col-lg-12">
-
-<div class="card">
-<div class="card-body">
-  <h5 class="card-title">Default Table</h5>
-
-  <!-- Default Table -->
-  <table id="example" class="table table-hover" style="width:100%">
-    <thead>
-        <tr>
-            <th>nom</th>
-            <th>prix</th>
-            <th>description</th>
-            <th>quantité</th>
-            <th>categorie</th>
-            <th>Image</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($pro as $produit)
-        <tr>
-            <td>{{ $produit->nom }}</td>
-            <td>{{ $produit->prix }}</td>
-            <td>{{ $produit->description }}</td>
-            <td>{{ $produit->categorie }}</td>
-
-            <td>
-                @if ($produit->image)
-                    <img src="{{ asset('public/images/categories/' . $produit->image) }}" alt="Image de catégorie" style="max-width: 100px;">
-                @else
-                    Aucune image
-                @endif
-            </td>
-            <td>
-                <form action="{{ route('produit.effacer', $produit->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employé ?')">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-danger" type="submit"><i class="bi bi-trash3"></i></button>
-
-
-                </form>
-                <button class="btn btn-sm btn-success edit-btn" type="button" data-toggle="modal" data-target="#editModal" data-id="{{ $produit->id }}"><i class="bi bi-pencil-square"></i></button>
-            </td>
-        </tr>
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modifier la catégorie</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editForm" method="POST" action="{{ route('produit.update', $produit->id) }}">
-                            @method('PUT') <!-- Ajoutez cette ligne -->
-                            @csrf
-                <input type="hidden" name="categorie_id" id="categorie_id">
-                <div class="form-group">
-                    <label for="nom">Nom</label>
-                    <input type="text" class="form-control" id="nom" name="nom">
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <input type="text" class="form-control" id="description" name="description">
-                </div>
-                <div class="form-group">
-                    <label for="slug">Slug</label>
-                    <input type="text" class="form-control" id="slug" name="slug">
-                </div>
-                <div class="col-md-12">
-                    <label for="image">Image</label>
-                    <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image">
-                    @error('image')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="button" class="btn btn-primary" id="saveChangesBtn">Enregistrer les modifications</button>
-                    </div>
-                </div>
+        <div class="card">
+            <div class="card-body">
+                <!-- Default Table -->
+                <table id="example" class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>nom</th>
+                            <th>prix</th>
+                            <th>description</th>
+                            <th>quantité</th>
+                            <th>categorie</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($pro as $produit)
+                        <tr>
+                            <td>{{ $produit->nom }}</td>
+                            <td>{{ $produit->prix }}</td>
+                            <td>{{ $produit->description }}</td>
+                            <td>{{ $produit->quantité }}</td> <!-- Ajout de quantité -->
+                            <td>{{ $produit->cate->nom }}</td> <!-- Utilisation de la relation cate -->
+                            <td>
+                                @if ($produit->image)
+                                <img src="{{ asset('public/images/categories/' . $produit->image) }}" alt="Image de catégorie" style="max-width: 100px;">
+                                @else
+                                Aucune image
+                                @endif
+                            </td>
+                            <td>
+                                <form action="{{ route('produit.effacer', $produit->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger" type="submit">supprimer</button>
+                                </form>
+                                <button class="btn btn-sm btn-success edit-btn" type="button" data-toggle="modal" data-target="#editModal" data-id="{{ $produit->id }}">modifier</button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-        @endforeach
-    </tbody>
-</table>
-</div>
-</div></div>
-</div>
-<script>
-$(document).ready(function () {
-    $('#example').DataTable();
-});
-</script>
-<script>
-$(document).ready(function () {
-    $('#example').DataTable();
-
-    $('.edit-btn').click(function () {
-        const categoryId = $(this).data('id');
-        $('#categorie_id').val(categoryId);
-        const bootstrapModal = new bootstrap.Modal($('#editModal'));
-        bootstrapModal.show();
-    });
-
-    $('#saveChangesBtn').click(function () {
-$('#editForm').submit();
-});
-});
-</script>
-
-
+    </div>
 </section>
+
+<!-- Modal de modification -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Modifier le produit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulaire de modification -->
+                <form id="editForm" action="{{ route('produit.update', $produit->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="categorie_id">Catégorie</label>
+                        <select class="form-control" id="categorie_id" name="categorie_id">
+                          
+                        </select>
+                    </div>
+                    <!-- Autres champs à modifier -->
+
+                    <button type="submit" class="btn btn-primary" id="saveChangesBtn">Enregistrer les modifications</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+
+        $('.edit-btn').click(function () {
+            const productId = $(this).data('id');
+            $('#editForm').attr('action', '/produit/' + productId); // Mise à jour de l'action du formulaire
+            const bootstrapModal = new bootstrap.Modal($('#editModal'));
+            bootstrapModal.show();
+        });
+
+        $('#saveChangesBtn').click(function () {
+            $('#editForm').submit();
+        });
+    });
+</script>
