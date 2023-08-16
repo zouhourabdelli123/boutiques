@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\categorie;
 use App\Models\produit;
 use Illuminate\Http\Request;
 
 class produitController extends Controller
 {
 
-    public function index ()
-{
-    $pro = produit::all();
-    return view('boutique.gerer-produit', compact('pro'));
-}
+    public function index()
+    {
+        $pro = produit::all();
+        $categories = categorie::all();
+        return view('boutique.gerer-produit', compact('pro', 'categories'));
+    }
 public function afficher ()
 {
     $pro = produit::all();
@@ -24,7 +26,6 @@ public function afficher ()
     {
         return view('boutique.gerer-produit');
     }
-
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -32,16 +33,28 @@ public function afficher ()
             'prix' => 'required',
             'description' => 'required',
             'quantité' => 'required',
-            'categorie' => 'required',
+            'categorie_id' => 'required', // Utilisez categorie_id au lieu de id_categorie
             'image' => 'required',
-
         ]);
 
-  
-        produit::create($data);
+        $product = produit::create([
+            'nom' => $data['nom'],
+            'prix' => $data['prix'],
+            'description' => $data['description'],
+            'quantité' => $data['quantité'],
+            'image' => $data['image'],
+            'categorie_id' => $data['categorie_id'], // Utilisation de categorie_id
+        ]);
+
+        $category = categorie::find($data['categorie_id']);
+        $product->cate()->associate($category);
+        $product->save();
 
         return redirect()->back()->with('success', 'Données ajoutées avec succès.');
     }
+
+
+
     public function effacer($id)
     {
         $pro = produit::findOrFail($id);

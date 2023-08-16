@@ -15,9 +15,10 @@ class categorieController extends Controller
 
 public function create()
 {
-
-    return view('boutique.ajouter-categorie');
+    $categories = categorie::all(); // Fetch all categories from the database
+    return view('boutique.ajouter-categorie', compact('categories'));
 }
+
 
 
 

@@ -40,10 +40,26 @@
         <label for="quantité" class="form-label">quantité</label>
         <input type="text" class="form-control" id="quantité" name="quantité" required>
     </div>
-    <div class="col-md-4">
-        <label for="categorie" class="form-label">categorie</label>
-        <input type="text" class="form-control" id="categorie" name="categorie" required>
+    <div class="col-md-5">
+        <label for="categorie_id" class="form-label" style="color:#363B48; font-family:Georgia, serif;font-weight: 900;">Choisir une catégorie</label>
+        <select class="form-select"
+                id="categorie_id"
+                name="categorie_id"
+                aria-label=""
+                class="@error('categorie_id') is-invalid @enderror" value="{{ old('categorie_id') }}">
+
+            <option value="">--Choisissez la catégorie du matériel--</option>
+            @foreach($categories as $categorie)
+                <option value="{{$categorie->id}}">{{$categorie->nom}}</option>
+            @endforeach
+
+        </select>
+
+        @error('categorie_id')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
+
     <div class="col-md-12">
         <label for="image">Image</label>
         <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image">

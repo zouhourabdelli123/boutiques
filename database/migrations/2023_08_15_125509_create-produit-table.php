@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('prix');
             $table->string('description');
             $table->integer('quantité');
-            $table->json('categorie');
+            $table->unsignedBigInteger('categorie_id')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });
@@ -26,6 +26,9 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('produit');
+        Schema::table('produit', function (Blueprint $table) {
+            $table->dropForeign(['categorie_id']);
+            $table->dropColumn('categorie_id');
+        });
     }
 };
