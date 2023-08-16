@@ -33,7 +33,7 @@ public function afficher ()
             'prix' => 'required',
             'description' => 'required',
             'quantité' => 'required',
-            'categorie_id' => 'required', // Utilisez categorie_id au lieu de id_categorie
+            'categorie_id' => 'required', 
             'image' => 'required',
         ]);
 
@@ -43,7 +43,7 @@ public function afficher ()
             'description' => $data['description'],
             'quantité' => $data['quantité'],
             'image' => $data['image'],
-            'categorie_id' => $data['categorie_id'], // Utilisation de categorie_id
+            'categorie_id' => $data['categorie_id'],
         ]);
 
         $category = categorie::find($data['categorie_id']);

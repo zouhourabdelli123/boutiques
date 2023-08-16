@@ -10,12 +10,12 @@ class produit extends Model
     use HasFactory;
     protected $table = 'produit';
     protected $fillable = [
-        'nom', 'prix', 'description', 'quantité', 'categorie_id', 'image' // Utilisez "categorie_id"
+        'nom', 'prix', 'description', 'quantité', 'categorie_id', 'image'
     ];
 
     public function cate()
     {
-        return $this->belongsTo(categorie::class, 'categorie_id'); // Spécifiez la clé étrangère "categorie_id"
+        return $this->belongsTo(categorie::class, 'categorie_id');
     }
 }
 
